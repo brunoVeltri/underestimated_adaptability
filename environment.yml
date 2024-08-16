@@ -1,0 +1,30 @@
+---
+name: underestimated_adaptability
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python>3.10
+  - pip
+  - pytest
+  - pytest-cov
+  - pytest-xdist
+
+  # Package dependencies
+  - numpy
+  - pandas
+  - scipy
+  - pandas
+  - linearmodels
+  - statsmodels
+
+  # Misc
+  - black
+  - nb_black
+  - flake8
+  - jupyterlab
+  - matplotlib
+  - pdbpp
+  - pre-commit
+
+  
