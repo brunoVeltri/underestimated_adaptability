@@ -34,6 +34,25 @@ def monotonic_random_utility(params):
             utility_values[index] = max([utility_values[parent_index] for parent_index in parent_indeces]) + np.random.randint(1, max_utility_increment)
     return utility_values
         
+
+def concave_random_utility(params):
+    # unpack params
+    nb_goods = params['nb_goods']
+    max_good_amount = params['max_good_amount']
+    max_utility_increment = params['max_utility_increment']
+    # populate utility function with random values
+    utility_values = np.zeros((max_good_amount,)*nb_goods)
+    for index in np.ndindex(utility_values.shape):
+        if index == (0,)*nb_goods:
+            utility_values[index] = 0
+        else:
+            parent_indeces = get_parent_indices(index)
+            min_utility = max([utility_values[parent_index] for parent_index in parent_indeces])
+            max_increment = get_max_delta(index, utility_values, max_utility_increment)
+            breakpoint()
+            utility_values[index] = min_utility + np.random.randint(1, max_increment)
+    return utility_values
+
 def get_parent_indices(index):
     parent_indeces = []
     for i, value in enumerate(index):
@@ -41,7 +60,15 @@ def get_parent_indices(index):
             new_index = list(index)
             new_index[i] -= 1
             parent_indeces.append(tuple(new_index))
-    return parent_indeces
+    return parent_indeces    
+
+def get_max_delta(index, utility, max_utility_increment):
+    deltas = []
+    for parent in get_parent_indices(index):
+        for grandparent in get_parent_indices(parent):
+            deltas.append(utility[parent] - utility[grandparent])
+    return max(deltas, default=max_utility_increment)
+        
 
 #%%
 # plot

@@ -1,4 +1,4 @@
-from utility_functions import pure_random_utility, monotonic_random_utility
+from utility_functions import pure_random_utility, monotonic_random_utility, concave_random_utility
 import numpy as np
 
 # set params
@@ -33,6 +33,8 @@ if overwrite == 'y':
         utility_function = pure_random_utility(params)
     elif utility_function_choice == 2:
         utility_function = monotonic_random_utility(params)
+    elif utility_function_choice == 3:
+        utility_function = concave_random_utility(params)
     else:
         print("Invalid choice. Exiting.")
         exit()
