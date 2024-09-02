@@ -37,8 +37,8 @@ def monotonic_random_utility(params):
 
 def concave_random_utility(params):
     # unpack params
-    nb_goods = params['nb_goods'] + 1
-    max_good_amount = params['max_good_amount']
+    nb_goods = params['nb_goods']
+    max_good_amount = params['max_good_amount'] + 1
     max_utility_increment = 10000 # arbitrary value
     # populate utility function with random values
     utility_values = np.zeros((max_good_amount,)*nb_goods)
@@ -49,8 +49,8 @@ def concave_random_utility(params):
             parent_indeces = get_parent_indices(index)
             min_utility = max([utility_values[parent_index] for parent_index in parent_indeces])
             max_local_increment = get_max_delta(index, utility_values, max_utility_increment)
-            if max_local_increment == 0:
-                utility_values[index] = min_utility
+            if max_local_increment == 1:
+                utility_values[index] = min_utility + 1
             else:
                 utility_values[index] = min_utility + np.random.randint(1, max_local_increment)
     return utility_values
@@ -65,12 +65,15 @@ def get_parent_indices(index):
     return parent_indeces    
 
 def get_max_delta(index, utility, max_utility_increment):
+    ''' Get the discret equivalent of the maximum marginal utility 
+    at a given index so that the function is still concave.'''
     deltas = []
     for parent in get_parent_indices(index):
-        for grandparent in get_parent_indices(parent):
-            deltas.append(utility[parent] - utility[grandparent])
+        good_change_vector = np.array(index) - np.array(parent)
+        relevant_grandparent = np.array(parent) - good_change_vector
+        if all(relevant_grandparent >= 0):
+            deltas.append(utility[parent] - utility[tuple(relevant_grandparent)])
     return max(deltas, default=max_utility_increment)
-        
 
 def normalize_utility_function(utility_function, params):
     '''Normalize the utility function to the interval [0, max_utility_value].'''
@@ -84,14 +87,19 @@ def normalize_utility_function(utility_function, params):
 # plot
 def plot_utility_function_2d(utility_function, params):
     '''Plot a 2D slice of the utility function.'''
-    max_good_amount = params['max_good_amount']
+    max_good_amount = params['max_good_amount'] + 1
     # keep only first two dimensions
     utility_function_2d = utility_function.sum(axis=tuple(range(2, utility_function.ndim)))
-    # plot
+
+    # create a grid of x and y values
     x = np.arange(max_good_amount)
     y = np.arange(max_good_amount)
-    x, y = np.meshgrid(x, y)
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    ax.plot_surface(x, y, utility_function_2d)
+    X, Y = np.meshgrid(x, y)
+
+    # create a contour plot
+    plt.contourf(X, Y, utility_function_2d, cmap='viridis')
+    plt.colorbar()  # add a colorbar
+    plt.xlabel('Good 1')
+    plt.ylabel('Good 2')
+    plt.title('2D slice of utility function')
     plt.show()

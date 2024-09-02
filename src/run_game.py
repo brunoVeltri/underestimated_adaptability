@@ -1,6 +1,5 @@
 from utility_functions import pure_random_utility, monotonic_random_utility, concave_random_utility
 import numpy as np
-from utility_functions import pure_random_utility, monotonic_random_utility
 from solve import solve_quasilin_utility_maximization
 
 

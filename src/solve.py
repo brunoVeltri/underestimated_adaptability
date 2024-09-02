@@ -1,7 +1,10 @@
 import numpy as np
 
 def solve_quasilin_utility_maximization(util_func, prices, budget):
-    '''Solve the utility maximization problem with quasilinear preferences, i.e. excess budget is added to utility. Solution method: brute force.'''
+    '''Solve the utility maximization problem with quasilinear preferences, i.e. excess budget is added to utility: 
+    max u(x) + y - p*x
+    s.t. p*x <= y
+    Solution method: brute force.'''
     # unpack params
     nb_goods = len(prices)
     max_good_amount = util_func.shape[0]
