@@ -17,30 +17,30 @@ def prompt_developer_settings(params, utility_function, prices):
         print("Please enter the maximum marginal utility:")
         params['max_utility_increment'] = int(input())
 
-print("Would you like to overwrite the default utility function? (y/n)")
-overwrite = input()
-if overwrite == 'y':
-    print("You can choose between the following utility functions:")
-    print("1: Unrestricted")
-    print("2: Monotonic")
-    print("3: Concave")
-    utility_function_choice = int(input())
-    if utility_function_choice == 1:
-        utility_function = pure_random_utility(params)
-    elif utility_function_choice == 2:
-        utility_function = monotonic_random_utility(params)
-    elif utility_function_choice == 3:
-        utility_function = concave_random_utility(params)
-    else:
-        utility_function = monotonic_random_utility(params)
-
-    print("Would you like to overwrite the default prices? (y/n)")
+    print("Would you like to overwrite the default utility function? (y/n)")
     overwrite = input()
     if overwrite == 'y':
-        print("Please enter the prices for each good:")
-        for i in range(params['nb_goods']):
-            prices[i] = int(input("Price for good " + str(i) + ": "))
-    
+        print("You can choose between the following utility functions:")
+        print("1: Unrestricted")
+        print("2: Monotonic")
+        print("3: Concave")
+        utility_function_choice = int(input())
+        if utility_function_choice == 1:
+            utility_function = pure_random_utility(params)
+        elif utility_function_choice == 2:
+            utility_function = monotonic_random_utility(params)
+        elif utility_function_choice == 3:
+            utility_function = concave_random_utility(params)
+        else:
+            utility_function = monotonic_random_utility(params)
+
+        print("Would you like to overwrite the default prices? (y/n)")
+        overwrite = input()
+        if overwrite == 'y':
+            print("Please enter the prices for each good:")
+            for i in range(params['nb_goods']):
+                prices[i] = int(input("Price for good " + str(i) + ": "))
+        
     return params, utility_function, prices
 
 def print_instructions(params):
@@ -83,7 +83,7 @@ params = {
     'max_utility_increment': 10,
     'nb_rounds': 10
 }
-utility_function = monotonic_random_utility(params)
+utility_function = concave_random_utility(params)
 prices = np.array(np.random.randint(1, params['max_utility_increment'], params['nb_goods']))
 budget = params['max_good_amount'] * params['nb_goods'] * params['max_utility_increment']
 developer_settings = False

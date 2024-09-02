@@ -22,8 +22,8 @@ def monotonic_random_utility(params):
     '''Generate a monotonous increasing utility function with random values and integer support.'''
     # unpack params
     nb_goods = params['nb_goods']
-    max_good_amount = params['max_good_amount']
-    max_utility_increment = params['max_utility_increment']
+    max_good_amount = params['max_good_amount'] + 1 
+    max_utility_increment = 10000 # arbitrary value
     # populate utility function with random values
     utility_values = np.zeros((max_good_amount,)*nb_goods)
     for index in np.ndindex(utility_values.shape):
@@ -37,9 +37,9 @@ def monotonic_random_utility(params):
 
 def concave_random_utility(params):
     # unpack params
-    nb_goods = params['nb_goods']
+    nb_goods = params['nb_goods'] + 1
     max_good_amount = params['max_good_amount']
-    max_utility_increment = params['max_utility_increment']
+    max_utility_increment = 10000 # arbitrary value
     # populate utility function with random values
     utility_values = np.zeros((max_good_amount,)*nb_goods)
     for index in np.ndindex(utility_values.shape):
@@ -48,9 +48,11 @@ def concave_random_utility(params):
         else:
             parent_indeces = get_parent_indices(index)
             min_utility = max([utility_values[parent_index] for parent_index in parent_indeces])
-            max_increment = get_max_delta(index, utility_values, max_utility_increment)
-            breakpoint()
-            utility_values[index] = min_utility + np.random.randint(1, max_increment)
+            max_local_increment = get_max_delta(index, utility_values, max_utility_increment)
+            if max_local_increment == 0:
+                utility_values[index] = min_utility
+            else:
+                utility_values[index] = min_utility + np.random.randint(1, max_local_increment)
     return utility_values
 
 def get_parent_indices(index):
@@ -69,6 +71,14 @@ def get_max_delta(index, utility, max_utility_increment):
             deltas.append(utility[parent] - utility[grandparent])
     return max(deltas, default=max_utility_increment)
         
+
+def normalize_utility_function(utility_function, params):
+    '''Normalize the utility function to the interval [0, max_utility_value].'''
+    max_utility_value = params['max_utility_value']
+    utility_function -= utility_function.min()
+    utility_function /= utility_function.max()
+    utility_function *= max_utility_value
+    return utility_function
 
 #%%
 # plot
